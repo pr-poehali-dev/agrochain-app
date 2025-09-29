@@ -109,7 +109,7 @@ const Index = () => {
                   alt="AgroChain Logo" 
                   className="w-10 h-10 rounded-lg"
                 />
-                <h1 className="text-2xl font-bold text-forest-800">AgroChain</h1>
+                <h1 className="text-2xl font-bold text-forest-800">Агро-Ярче</h1>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -155,7 +155,7 @@ const Index = () => {
               <div className="relative z-10 px-8 py-12">
                 <div className="max-w-4xl mx-auto text-center">
                   <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                    Добро пожаловать в AgroChain! 🌱
+                    Добро пожаловать в Агро-Ярче! 🌱
                   </h1>
                   <p className="text-xl md:text-2xl mb-8 text-white/90">
                     Цифровая платформа для современного сельского хозяйства
