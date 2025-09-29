@@ -61,6 +61,42 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				earth: {
+					50: '#F8F6F1',
+					100: '#F5DEB3',
+					200: '#D2B48C',
+					300: '#CD853F',
+					400: '#A0522D',
+					500: '#8B4513',
+					600: '#654321',
+					700: '#4A2C17',
+					800: '#321E11',
+					900: '#1F1109'
+				},
+				forest: {
+					50: '#F0F8F0',
+					100: '#E8F5E8',
+					200: '#C8E6C8',
+					300: '#93D693',
+					400: '#5CB85C',
+					500: '#228B22',
+					600: '#1E7E1E',
+					700: '#1A6B1A',
+					800: '#165816',
+					900: '#0F3F0F'
+				},
+				grass: {
+					50: '#F8FFF8',
+					100: '#E8FFE8',
+					200: '#B3FFB3',
+					300: '#7FFF7F',
+					400: '#4CFF4C',
+					500: '#32CD32',
+					600: '#228B22',
+					700: '#1A6B1A',
+					800: '#115511',
+					900: '#0A330A'
 				}
 			},
 			borderRadius: {
