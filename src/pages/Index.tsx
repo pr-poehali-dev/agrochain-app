@@ -83,9 +83,11 @@ const Index = () => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-forest-500 to-grass-500 rounded-lg flex items-center justify-center">
-                  <Icon name="Wheat" size={24} className="text-white" />
-                </div>
+                <img 
+                  src="https://cdn.poehali.dev/files/6bc9b786-7608-4b9f-9298-c4b43f894e7b.png" 
+                  alt="AgroChain Logo" 
+                  className="w-10 h-10 rounded-lg"
+                />
                 <h1 className="text-2xl font-bold text-forest-800">AgroChain</h1>
               </div>
             </div>
