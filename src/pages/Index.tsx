@@ -149,11 +149,72 @@ const Index = () => {
 
           {/* Дашборд */}
           <TabsContent value="dashboard" className="space-y-6 mt-6">
-            <div className="mb-8">
-              <h2 className="text-3xl font-bold text-forest-800 mb-2">
-                Добро пожаловать в AgroChain! 🌱
-              </h2>
-              <p className="text-forest-600">Управляйте полями, урожаем и продажами — легко и эффективно</p>
+            {/* Информационный блок о платформе */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-forest-600 via-forest-500 to-grass-500 text-white mb-8">
+              <div className="absolute inset-0 bg-black/20"></div>
+              <div className="relative z-10 px-8 py-12">
+                <div className="max-w-4xl mx-auto text-center">
+                  <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                    Добро пожаловать в AgroChain! 🌱
+                  </h1>
+                  <p className="text-xl md:text-2xl mb-8 text-white/90">
+                    Цифровая платформа для современного сельского хозяйства
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                      <Icon name="MapPin" size={40} className="mx-auto mb-3 text-white" />
+                      <h3 className="font-semibold text-lg mb-2">Управление полями</h3>
+                      <p className="text-white/80 text-sm">Отслеживайте все ваши участки на интерактивной карте</p>
+                    </div>
+                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                      <Icon name="TrendingUp" size={40} className="mx-auto mb-3 text-white" />
+                      <h3 className="font-semibold text-lg mb-2">Аналитика урожая</h3>
+                      <p className="text-white/80 text-sm">Получайте детальную статистику и прогнозы</p>
+                    </div>
+                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                      <Icon name="Users" size={40} className="mx-auto mb-3 text-white" />
+                      <h3 className="font-semibold text-lg mb-2">Поиск покупателей</h3>
+                      <p className="text-white/80 text-sm">Находите лучшие предложения для продажи урожая</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Галерея преимуществ */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              <Card className="bg-white/70 backdrop-blur-sm border-forest-200 overflow-hidden">
+                <div className="h-48 bg-cover bg-center" style={{backgroundImage: "url('/img/d7b959bb-9dd2-4477-b29f-d29ad3638483.jpg')"}}>
+                  <div className="h-full bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                    <div className="p-6 text-white">
+                      <h3 className="text-xl font-bold mb-2">Контроль территории</h3>
+                      <p className="text-white/90">Полный обзор ваших земельных угодий</p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="bg-white/70 backdrop-blur-sm border-forest-200 overflow-hidden">
+                <div className="h-48 bg-cover bg-center" style={{backgroundImage: "url('/img/6ed140d1-e7ed-4668-861a-ed8a5b58fb19.jpg')"}}>
+                  <div className="h-full bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                    <div className="p-6 text-white">
+                      <h3 className="text-xl font-bold mb-2">Умные технологии</h3>
+                      <p className="text-white/90">Современные решения для эффективного земледелия</p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="bg-white/70 backdrop-blur-sm border-forest-200 overflow-hidden">
+                <div className="h-48 bg-cover bg-center" style={{backgroundImage: "url('/img/54b424d8-7554-4db4-977f-4ebb03b5c183.jpg')"}}>
+                  <div className="h-full bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                    <div className="p-6 text-white">
+                      <h3 className="text-xl font-bold mb-2">Богатый урожай</h3>
+                      <p className="text-white/90">Максимизируйте прибыль от продажи продукции</p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
             </div>
 
             {/* Основная статистика */}
