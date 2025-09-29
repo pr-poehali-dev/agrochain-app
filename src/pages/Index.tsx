@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -12,50 +12,71 @@ import Icon from '@/components/ui/icon'
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard')
+  const [fields, setFields] = useState([])
+  const [upcomingEvents, setUpcomingEvents] = useState([])
+  const [totalArea, setTotalArea] = useState(0)
+  const [readyForHarvest, setReadyForHarvest] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [newFieldData, setNewFieldData] = useState({ name: '', area: '', crop: '' })
 
-  // Моковые данные полей
-  const fields = [
-    {
-      id: 1,
-      name: 'Поле "Северное"',
-      area: 25.3,
-      crop: 'Пшеница',
-      status: 'growing',
-      progress: 75,
-      plantDate: '2024-05-15',
-      harvestDate: '2024-09-20'
-    },
-    {
-      id: 2,
-      name: 'Поле "Восточное"',
-      area: 18.7,
-      crop: 'Картофель',
-      status: 'harvest-ready',
-      progress: 95,
-      plantDate: '2024-04-20',
-      harvestDate: '2024-08-15'
-    },
-    {
-      id: 3,
-      name: 'Поле "Южное"',
-      area: 32.1,
-      crop: 'Кукуруза',
-      status: 'planted',
-      progress: 45,
-      plantDate: '2024-06-01',
-      harvestDate: '2024-10-15'
+  // Функция загрузки данных из API
+  const loadData = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('https://functions.poehali.dev/74c76e4e-00b1-4fab-bce4-340170b29c16')
+      if (!response.ok) throw new Error('Ошибка загрузки данных')
+      
+      const data = await response.json()
+      setFields(data.fields || [])
+      setUpcomingEvents(data.events || [])
+      setTotalArea(data.total_area || 0)
+      setReadyForHarvest(data.ready_for_harvest || 0)
+    } catch (error) {
+      console.error('Ошибка загрузки данных:', error)
+    } finally {
+      setLoading(false)
     }
-  ]
+  }
 
-  // Предстоящие события
-  const upcomingEvents = [
-    { id: 1, field: 'Северное', action: 'Обработка от вредителей', date: '2024-10-02', days: 3 },
-    { id: 2, field: 'Восточное', action: 'Сбор урожая', date: '2024-10-05', days: 6 },
-    { id: 3, field: 'Южное', action: 'Внесение удобрений', date: '2024-10-10', days: 11 }
-  ]
+  // Функция добавления нового поля
+  const addNewField = async () => {
+    if (!newFieldData.name || !newFieldData.area || !newFieldData.crop) {
+      alert('Заполните все поля')
+      return
+    }
 
-  const totalArea = fields.reduce((sum, field) => sum + field.area, 0)
-  const readyForHarvest = fields.filter(field => field.status === 'harvest-ready').length
+    try {
+      const response = await fetch('https://functions.poehali.dev/74c76e4e-00b1-4fab-bce4-340170b29c16', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: newFieldData.name,
+          area: parseFloat(newFieldData.area),
+          crop: newFieldData.crop
+        })
+      })
+
+      if (!response.ok) throw new Error('Ошибка добавления поля')
+      
+      // Перезагружаем данные
+      await loadData()
+      
+      // Очищаем форму
+      setNewFieldData({ name: '', area: '', crop: '' })
+      
+      alert('Поле успешно добавлено!')
+    } catch (error) {
+      console.error('Ошибка добавления поля:', error)
+      alert('Ошибка при добавлении поля')
+    }
+  }
+
+  // Загрузка данных при загрузке компонента
+  useEffect(() => {
+    loadData()
+  }, [])
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -143,9 +164,11 @@ const Index = () => {
                   <Icon name="MapPin" className="h-4 w-4 text-forest-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-forest-800">{fields.length}</div>
+                  <div className="text-2xl font-bold text-forest-800">
+                    {loading ? '...' : fields.length}
+                  </div>
                   <p className="text-xs text-forest-600">
-                    {totalArea.toFixed(1)} га общей площади
+                    {loading ? 'Загрузка...' : `${totalArea.toFixed(1)} га общей площади`}
                   </p>
                 </CardContent>
               </Card>
@@ -156,9 +179,11 @@ const Index = () => {
                   <Icon name="Package" className="h-4 w-4 text-earth-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-earth-800">{readyForHarvest}</div>
+                  <div className="text-2xl font-bold text-earth-800">
+                    {loading ? '...' : readyForHarvest}
+                  </div>
                   <p className="text-xs text-earth-600">
-                    полей требует внимания
+                    {loading ? 'Загрузка...' : 'полей требует внимания'}
                   </p>
                 </CardContent>
               </Card>
@@ -169,9 +194,11 @@ const Index = () => {
                   <Icon name="Wheat" className="h-4 w-4 text-grass-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-grass-800">Пшеница</div>
+                  <div className="text-2xl font-bold text-grass-800">
+                    {loading ? 'Загрузка...' : (fields.length > 0 ? fields[0].crop : 'Нет данных')}
+                  </div>
                   <p className="text-xs text-grass-600">
-                    25.3 га засеяно
+                    {loading ? '...' : (fields.length > 0 ? `${fields[0]?.area || 0} га засеяно` : 'Добавьте поля')}
                   </p>
                 </CardContent>
               </Card>
@@ -182,9 +209,11 @@ const Index = () => {
                   <Icon name="Clock" className="h-4 w-4 text-orange-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-orange-800">{upcomingEvents.length}</div>
+                  <div className="text-2xl font-bold text-orange-800">
+                    {loading ? '...' : upcomingEvents.length}
+                  </div>
                   <p className="text-xs text-orange-600">
-                    на ближайшие дни
+                    {loading ? 'Загрузка...' : 'на ближайшие дни'}
                   </p>
                 </CardContent>
               </Card>
@@ -199,8 +228,20 @@ const Index = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  {fields.map((field) => (
+                {loading ? (
+                  <div className="text-center py-8">
+                    <Icon name="Loader2" size={32} className="text-forest-500 animate-spin mx-auto mb-2" />
+                    <p className="text-forest-600">Загружаем данные о полях...</p>
+                  </div>
+                ) : fields.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Icon name="Sprout" size={48} className="text-forest-400 mx-auto mb-4" />
+                    <p className="text-forest-600">Пока нет добавленных полей</p>
+                    <p className="text-sm text-forest-500 mt-2">Добавьте первое поле во вкладке "Поля"</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    {fields.map((field) => (
                     <div key={field.id} className="border border-forest-100 rounded-lg p-4 bg-white/50">
                       <div className="flex justify-between items-start mb-3">
                         <h3 className="font-semibold text-forest-800">{field.name}</h3>
@@ -223,11 +264,12 @@ const Index = () => {
                             <span>{field.progress}%</span>
                           </div>
                           <Progress value={field.progress} className="h-2" />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -240,8 +282,20 @@ const Index = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {upcomingEvents.map((event) => (
+                {loading ? (
+                  <div className="text-center py-8">
+                    <Icon name="Loader2" size={32} className="text-forest-500 animate-spin mx-auto mb-2" />
+                    <p className="text-forest-600">Загружаем события...</p>
+                  </div>
+                ) : upcomingEvents.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Icon name="Calendar" size={48} className="text-forest-400 mx-auto mb-4" />
+                    <p className="text-forest-600">Нет запланированных событий</p>
+                    <p className="text-sm text-forest-500 mt-2">Добавьте мероприятия во вкладке "События"</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {upcomingEvents.map((event) => (
                     <div key={event.id} className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-forest-100">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-forest-100 rounded-full flex items-center justify-center">
@@ -255,10 +309,11 @@ const Index = () => {
                       <div className="text-right">
                         <p className="text-sm font-medium text-forest-800">через {event.days} дней</p>
                         <p className="text-xs text-forest-600">{event.date}</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -287,28 +342,42 @@ const Index = () => {
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="field-name">Название поля</Label>
-                      <Input id="field-name" placeholder="Например: Поле 'Западное'" />
+                      <Input 
+                        id="field-name" 
+                        placeholder="Например: Поле 'Западное'"
+                        value={newFieldData.name}
+                        onChange={(e) => setNewFieldData({...newFieldData, name: e.target.value})}
+                      />
                     </div>
                     <div>
                       <Label htmlFor="field-area">Площадь (га)</Label>
-                      <Input id="field-area" type="number" placeholder="25.5" />
+                      <Input 
+                        id="field-area" 
+                        type="number" 
+                        placeholder="25.5"
+                        value={newFieldData.area}
+                        onChange={(e) => setNewFieldData({...newFieldData, area: e.target.value})}
+                      />
                     </div>
                     <div>
                       <Label htmlFor="field-crop">Культура</Label>
-                      <Select>
+                      <Select onValueChange={(value) => setNewFieldData({...newFieldData, crop: value})}>
                         <SelectTrigger>
                           <SelectValue placeholder="Выберите культуру" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="wheat">Пшеница</SelectItem>
-                          <SelectItem value="potato">Картофель</SelectItem>
-                          <SelectItem value="corn">Кукуруза</SelectItem>
-                          <SelectItem value="barley">Ячмень</SelectItem>
-                          <SelectItem value="oats">Овёс</SelectItem>
+                          <SelectItem value="Пшеница">Пшеница</SelectItem>
+                          <SelectItem value="Картофель">Картофель</SelectItem>
+                          <SelectItem value="Кукуруза">Кукуруза</SelectItem>
+                          <SelectItem value="Ячмень">Ячмень</SelectItem>
+                          <SelectItem value="Овёс">Овёс</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    <Button className="w-full bg-forest-500 hover:bg-forest-600">
+                    <Button 
+                      className="w-full bg-forest-500 hover:bg-forest-600"
+                      onClick={addNewField}
+                    >
                       Сохранить поле
                     </Button>
                   </div>

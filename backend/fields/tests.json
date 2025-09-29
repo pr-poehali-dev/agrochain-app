@@ -1,0 +1,37 @@
+{
+  "tests": [
+    {
+      "name": "Get all fields and events",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "fields": "array",
+        "events": "array",
+        "total_area": "number",
+        "ready_for_harvest": "number"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Add new field",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "name": "Тестовое поле",
+        "area": 15.5,
+        "crop": "Ячмень"
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "success": true,
+        "field": {
+          "name": "string",
+          "area": "number",
+          "crop": "string"
+        }
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
